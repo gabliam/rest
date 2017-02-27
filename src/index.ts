@@ -15,7 +15,6 @@ export default class RestPlugin implements coreInterfaces.GabliamPlugin {
     constructor(public app: express.Application, public container: inversifyInterfaces.Container){}
 
     bind() {
-        console.log('bind', registry.get(TYPE.Controller));
         registry.get(TYPE.Controller)
             .forEach(({id, target}) => this.container.bind<any>(id).to(target).inSingletonScope());
     }
@@ -28,7 +27,6 @@ export default class RestPlugin implements coreInterfaces.GabliamPlugin {
     private registerControllers(restConfig: interfaces.RestConfig) {
         debug('registerControllers');
         let controllerIds = registry.get(TYPE.Controller);
-        console.log('registerControllers', controllerIds);
         controllerIds.forEach(({id: controllerId}) => {
             let controller = this.container.get<interfaces.Controller>(controllerId);
 

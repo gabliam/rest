@@ -39,9 +39,7 @@ function decorateController(options: ControllerOptions | string, target: any, js
     let metadata: ControllerMetadata = { path, middlewares, target, json };
     Reflect.defineMetadata(METADATA_KEY.controller, metadata, target);
     injectable()(target);
-    console.log('decorate');
     registry.add(TYPE.Controller, {id, target});
-    console.log(registry.get(TYPE.Controller));
 }
 
 export function All(path: string, ...middlewares: express.RequestHandler[]): HandlerDecorator {

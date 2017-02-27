@@ -1,6 +1,6 @@
 /** Type in registry */
 export const TYPE = {
-    Controller: Symbol('Controller'),
+    Controller: 'ControllerType',
 };
 
 export const METADATA_KEY = {
