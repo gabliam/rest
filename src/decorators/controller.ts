@@ -1,7 +1,7 @@
 import * as express from 'express';
 import { ControllerMetadata, Controller, HandlerDecorator, ControllerMethodMetadata } from '../interfaces';
 import { METADATA_KEY, TYPE } from '../constants';
-import { registry, inversifyInterfaces, injectable } from '@gabliam/core';
+import { inversifyInterfaces, injectable, register } from '@gabliam/core';
 
 export interface ControllerOptions {
     name?: string;
@@ -39,7 +39,7 @@ function decorateController(options: ControllerOptions | string, target: any, js
     let metadata: ControllerMetadata = { path, middlewares, target, json };
     Reflect.defineMetadata(METADATA_KEY.controller, metadata, target);
     injectable()(target);
-    registry.add(TYPE.Controller, {id, target});
+    register(TYPE.Controller, {id, target})(target);
 }
 
 export function All(path: string, ...middlewares: express.RequestHandler[]): HandlerDecorator {

@@ -12,6 +12,6 @@ export class RestPluginConfig {
     restConfig(): RestConfig {
         return {
             rootPath: this.rootPath
-        }
+        };
     }
 }
