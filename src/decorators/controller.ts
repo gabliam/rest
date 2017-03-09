@@ -10,12 +10,17 @@ export interface ControllerOptions {
     middlewares?: express.RequestHandler[];
 }
 
+export function Controller(options: ControllerOptions);
+export function Controller(path: string);
 export function Controller(options: ControllerOptions | string) {
     return function (target: any) {
         decorateController(options, target, false);
     };
 }
 
+
+export function RestController(options: ControllerOptions);
+export function RestController(path: string);
 export function RestController(options: ControllerOptions | string) {
     return function (target: any) {
         decorateController(options, target, true);

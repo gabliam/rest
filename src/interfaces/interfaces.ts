@@ -8,3 +8,9 @@ export interface HandlerDecorator {
 export interface RestConfig {
     rootPath: string;
 }
+
+export interface MiddlewareDefinition {
+    name: string;
+
+    values: any[];
+}

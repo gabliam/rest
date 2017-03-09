@@ -1,4 +1,5 @@
 import * as express from 'express';
+import { MiddlewareDefinition } from './interfaces';
 
 export interface ControllerMetadata {
     path: string;
@@ -10,4 +11,12 @@ export interface ControllerMetadata {
 export interface ControllerMethodMetadata extends ControllerMetadata {
     method: string;
     key: string;
+}
+
+export interface MiddlewareMetadata {
+    target: any;
+
+    key: string;
+
+    middlewares: (express.RequestHandler | MiddlewareDefinition)[];
 }

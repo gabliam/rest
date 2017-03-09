@@ -85,7 +85,7 @@ export default class RestPlugin implements coreInterfaces.GabliamPlugin {
                         next(error);
                     });
 
-            } else if (result && !res.headersSent) {
+            } else if (result !== undefined && !res.headersSent) {
                 if (json) {
                     res.json(result);
                 } else {
