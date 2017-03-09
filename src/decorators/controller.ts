@@ -2,6 +2,7 @@ import * as express from 'express';
 import { ControllerMetadata, Controller, HandlerDecorator, ControllerMethodMetadata } from '../interfaces';
 import { METADATA_KEY, TYPE } from '../constants';
 import { inversifyInterfaces, injectable, register } from '@gabliam/core';
+import { addMiddlewareMetadata } from '../metadata';
 
 export interface ControllerOptions {
     name?: string;
@@ -41,7 +42,9 @@ function decorateController(options: ControllerOptions | string, target: any, js
         }
     }
 
-    let metadata: ControllerMetadata = { path, middlewares, target, json };
+    addMiddlewareMetadata(middlewares, target);
+
+    let metadata: ControllerMetadata = { path, target, json };
     Reflect.defineMetadata(METADATA_KEY.controller, metadata, target);
     injectable()(target);
     register(TYPE.Controller, {id, target})(target);
@@ -76,10 +79,11 @@ export function Delete(path: string, ...middlewares: express.RequestHandler[]): 
 }
 
 export function Method(method: string, path: string, ...middlewares: express.RequestHandler[]): HandlerDecorator {
-    return function (target: any, key: string, value: any) {
-        let metadata: ControllerMethodMetadata = { path, middlewares, method, target, key };
+    return function (target: any, key: string, descriptor: PropertyDescriptor) {
+        let metadata: ControllerMethodMetadata = { path, method, target, key };
         let metadataList: ControllerMethodMetadata[] = [];
 
+        addMiddlewareMetadata(middlewares, target.constructor, key);
         if (!Reflect.hasOwnMetadata(METADATA_KEY.controllerMethod, target.constructor)) {
             Reflect.defineMetadata(METADATA_KEY.controllerMethod, metadataList, target.constructor);
         } else {

@@ -6,6 +6,7 @@ export const TYPE = {
 export const METADATA_KEY = {
     controller: '_controller',
     controllerMethod: '_controller-method',
+    middleware: '_middleware',
 };
 
 export const DEFAULT_ROUTING_ROOT_PATH = '/';

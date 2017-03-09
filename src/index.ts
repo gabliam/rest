@@ -1,5 +1,7 @@
 import { interfaces as coreInterfaces, inversifyInterfaces, Scan, Registry } from '@gabliam/core';
 import { TYPE, METADATA_KEY, REST_CONFIG } from './constants';
+import { getMiddlewares } from './metadata';
+import { cleanPath } from './utils';
 import * as interfaces from './interfaces';
 import * as express from 'express';
 import * as d from 'debug';
@@ -30,28 +32,32 @@ export default class RestPlugin implements coreInterfaces.GabliamPlugin {
                 controller.constructor
             );
 
-            let methodMetadata: interfaces.ControllerMethodMetadata[] = Reflect.getOwnMetadata(
+            let controllerMiddlewares = getMiddlewares(container, controller.constructor);
+
+            let methodMetadatas: interfaces.ControllerMethodMetadata[] = Reflect.getOwnMetadata(
                 METADATA_KEY.controllerMethod,
                 controller.constructor
             );
 
-            if (controllerMetadata && methodMetadata) {
+            if (controllerMetadata && methodMetadatas) {
                 let router = express.Router();
                 let routerPath = cleanPath(`${restConfig.rootPath}${controllerMetadata.path}`);
                 debug(`New route : "${routerPath}"`);
-                methodMetadata.forEach((metadata: interfaces.ControllerMethodMetadata) => {
-                    let metadataPath = cleanPath(metadata.path);
-                    debug(metadataPath);
+                methodMetadatas.forEach((methodMetadata: interfaces.ControllerMethodMetadata) => {
+                    let methodMetadataPath = cleanPath(methodMetadata.path);
+                    let methodMiddlewares = getMiddlewares(container, controller.constructor, methodMetadata.key);
+                    debug(methodMetadataPath);
+                    debug({ methodMiddlewares, controllerMiddlewares });
                     let handler: express.RequestHandler = this.handlerFactory(
                         container,
                         controllerId,
-                        metadata.key,
+                        methodMetadata.key,
                         controllerMetadata.json
                     );
-                    router[metadata.method](
-                        metadataPath,
-                        ...controllerMetadata.middlewares,
-                        ...metadata.middlewares,
+                    router[methodMetadata.method](
+                        methodMetadataPath,
+                        ...controllerMiddlewares,
+                        ...methodMiddlewares,
                         handler
                     );
                 });
@@ -94,8 +100,4 @@ export default class RestPlugin implements coreInterfaces.GabliamPlugin {
             }
         };
     }
-}
-
-function cleanPath(path: string) {
-    return path.replace(/\/+/gi, '/');
 }

@@ -1,3 +1,4 @@
+import * as express from 'express';
 
 export interface Controller { }
 
@@ -7,6 +8,10 @@ export interface HandlerDecorator {
 
 export interface RestConfig {
     rootPath: string;
+}
+
+export interface MiddlewareConfigurator {
+    (...values: any[]):  express.RequestHandler;
 }
 
 export interface MiddlewareDefinition {

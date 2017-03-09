@@ -3,7 +3,6 @@ import { MiddlewareDefinition } from './interfaces';
 
 export interface ControllerMetadata {
     path: string;
-    middlewares: express.RequestHandler[];
     target: any;
     json?: boolean;
 }
@@ -13,10 +12,4 @@ export interface ControllerMethodMetadata extends ControllerMetadata {
     key: string;
 }
 
-export interface MiddlewareMetadata {
-    target: any;
-
-    key: string;
-
-    middlewares: (express.RequestHandler | MiddlewareDefinition)[];
-}
+export type MiddlewareMetadata = express.RequestHandler | MiddlewareDefinition;
