@@ -79,7 +79,7 @@ export default class RestPlugin implements coreInterfaces.GabliamPlugin {
             if (result && result instanceof Promise) {
 
                 result.then((value: any) => {
-                    if (!res.headersSent) {
+                    if (value !== undefined && !res.headersSent) {
                         if (json) {
                             res.json(value);
                         } else {
@@ -91,7 +91,7 @@ export default class RestPlugin implements coreInterfaces.GabliamPlugin {
                         next(error);
                     });
 
-            } else if (!res.headersSent) {
+            } else if (result !== undefined && !res.headersSent) {
                 if (json) {
                     res.json(result);
                 } else {
