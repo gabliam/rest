@@ -2,7 +2,7 @@ import { inversifyInterfaces } from '@gabliam/core';
 import * as express from 'express';
 import { MiddlewareMetadata, MiddlewareConfigurator } from '../interfaces';
 import { METADATA_KEY } from '../constants';
-import { isMiddlewareDefinition } from '../utils'; 
+import { isMiddlewareDefinition } from '../utils';
 
 export function addMiddlewareMetadata(middlewares: MiddlewareMetadata[], target: Object, key?: string) {
     let metadataList: MiddlewareMetadata[] = [];
