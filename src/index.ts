@@ -100,4 +100,6 @@ export default class RestPlugin implements coreInterfaces.GabliamPlugin {
             }
         };
     }
+
+    async destroy() {}
 }
