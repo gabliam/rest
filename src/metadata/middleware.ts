@@ -23,11 +23,18 @@ export function getMiddlewares(container: inversifyInterfaces.Container, target:
     }
 
     return metadataList
-        .map<express.RequestHandler>(metadata => {
+        .reduce<Array<express.RequestHandler>>((prev, metadata) => {
             if (isMiddlewareDefinition(metadata)) {
-                let middleware = container.get<MiddlewareConfigurator>(`${metadata.name}Middleware`);
-                return middleware(...metadata.values);
+                let middleware = container.get<MiddlewareConfigurator>(`${metadata.name}Middleware`)(...metadata.values);
+                if (Array.isArray(middleware)) {
+                    prev.push(...middleware);
+                } else {
+                    prev.push(middleware);
+                }
+            } else {
+                prev.push(metadata);
             }
-            return metadata;
-        });
+
+            return prev;
+        }, []);
 }

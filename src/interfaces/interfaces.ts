@@ -11,7 +11,7 @@ export interface RestConfig {
 }
 
 export interface MiddlewareConfigurator {
-    (...values: any[]):  express.RequestHandler;
+    (...values: any[]):  express.RequestHandler | express.RequestHandler[];
 }
 
 export interface MiddlewareDefinition {
