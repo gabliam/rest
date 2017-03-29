@@ -18,6 +18,7 @@ function isMiddlewareInjectOptions(obj: any): obj is MiddlewareInjectOptions {
 }
 
 /**
+ * MiddlewareInjectAfter decorator
  * Inject Middleware
  *
  * @param  {MiddlewareInjectOptions} options options of Middleware
@@ -26,6 +27,7 @@ function isMiddlewareInjectOptions(obj: any): obj is MiddlewareInjectOptions {
 export function MiddlewareInject(options: MiddlewareInjectOptions, ...values: any[]);
 
 /**
+ * MiddlewareInjectAfter decorator
  * Inject Middleware
  *
  * @param  {string} name name of Middleware to inject
@@ -37,7 +39,7 @@ export function MiddlewareInject(opts: any, ...values: any[]) {
         let name: string = opts;
         let after: boolean = false;
         if (isMiddlewareInjectOptions(opts)) {
-            // ({name, after} = opts);
+            ({name, after} = opts);
         }
         let realTarget = target;
         // if key != undefined then it's a property decorator
@@ -47,6 +49,27 @@ export function MiddlewareInject(opts: any, ...values: any[]) {
         addMiddlewareMetadata([{name, values, after}], realTarget, key);
     };
 };
+
+/**
+ * MiddlewareInjectAfter decorator
+ * syntax sugar
+ *
+ * inject the Middleware after the Controller/method
+ *
+ * @param  {string} name name of Middleware to inject
+ * @param  {any[]} ...values values for configuration of Middleware
+ */
+export function MiddlewareInjectAfter(name: string, ...values: any[]) {
+    return function (target: any, key?: string) {
+        let after: boolean = true;
+        let realTarget = target;
+        // if key != undefined then it's a property decorator
+        if (key !== undefined) {
+            realTarget = target.constructor;
+        }
+        addMiddlewareMetadata([{name, values, after}], realTarget, key);
+    };
+}
 
 
 /**
