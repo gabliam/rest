@@ -11,19 +11,11 @@ export interface RestConfig {
 }
 
 export interface MiddlewareConfigurator {
-    (...values: any[]):  express.RequestHandler | express.RequestHandler[] | express.ErrorRequestHandler | express.ErrorRequestHandler[];
+    (...values: any[]):  express.RequestHandler | express.RequestHandler[];
 }
 
 export interface MiddlewareDefinition {
     name: string;
 
     values: any[];
-
-    after: boolean;
-}
-
-export interface MiddlewareConfiguration {
-    before: (express.RequestHandler| express.ErrorRequestHandler)[];
-
-    after: (express.RequestHandler| express.ErrorRequestHandler)[];
 }
