@@ -56,9 +56,11 @@ export default class RestPlugin implements coreInterfaces.GabliamPlugin {
                     );
                     router[methodMetadata.method](
                         methodMetadataPath,
-                        ...controllerMiddlewares,
-                        ...methodMiddlewares,
-                        handler
+                        ...controllerMiddlewares.before,
+                        ...methodMiddlewares.before,
+                        handler,
+                        ...controllerMiddlewares.after,
+                        ...methodMiddlewares.after,
                     );
                 });
                 app.use(routerPath, router);

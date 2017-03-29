@@ -1,6 +1,5 @@
 import { inversifyInterfaces } from '@gabliam/core';
-import * as express from 'express';
-import { MiddlewareMetadata, MiddlewareConfigurator } from '../interfaces';
+import { MiddlewareMetadata, MiddlewareConfigurator, MiddlewareConfiguration } from '../interfaces';
 import { METADATA_KEY } from '../constants';
 import { isMiddlewareDefinition } from '../utils';
 
@@ -16,25 +15,35 @@ export function addMiddlewareMetadata(middlewares: MiddlewareMetadata[], target:
     metadataList.push(...middlewares);
 }
 
-export function getMiddlewares(container: inversifyInterfaces.Container, target: Object, key?: string): express.RequestHandler[] {
+export function getMiddlewares(
+    container: inversifyInterfaces.Container,
+    target: Object,
+    key?: string
+): MiddlewareConfiguration {
     let metadataList: MiddlewareMetadata[] = [];
     if (Reflect.hasOwnMetadata(METADATA_KEY.middleware, target, key)) {
         metadataList = Reflect.getOwnMetadata(METADATA_KEY.middleware, target, key);
     }
 
     return metadataList
-        .reduce<Array<express.RequestHandler>>((prev, metadata) => {
+        .reduce<MiddlewareConfiguration>((prev, metadata) => {
             if (isMiddlewareDefinition(metadata)) {
                 let middleware = container.get<MiddlewareConfigurator>(`${metadata.name}Middleware`)(...metadata.values);
+
+                let p = metadata.after ? prev.after : prev.before;
+
                 if (Array.isArray(middleware)) {
-                    prev.push(...middleware);
+                    p.push(...middleware);
                 } else {
-                    prev.push(middleware);
+                    p.push(middleware);
                 }
             } else {
-                prev.push(metadata);
+                prev.before.push(metadata);
             }
 
             return prev;
-        }, []);
+        }, {
+            before: [],
+            after: []
+        });
 }
